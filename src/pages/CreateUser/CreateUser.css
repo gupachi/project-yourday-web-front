@@ -62,6 +62,14 @@
   margin-bottom: 0.75rem;
 }
 
+/* 필드 설명 */
+.field-description {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+}
+
 /* 일반 입력 필드 */
 .input-field {
   width: 100%;
@@ -80,6 +88,42 @@
 
 .input-field::placeholder {
   color: #999;
+}
+
+/* 에러 메시지 */
+.error-message {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  color: #c33;
+  font-size: 0.95rem;
+}
+
+/* 응답 박스 */
+.response-box {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 8px;
+}
+
+.response-box h3 {
+  margin: 0 0 1rem 0;
+  color: #2e7d32;
+  font-size: 1.1rem;
+}
+
+.response-box pre {
+  margin: 0;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 /* 사진 업로드 영역 */
@@ -167,16 +211,21 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.1s;
   margin-top: 1rem;
 }
 
-.submit-button:hover {
+.submit-button:hover:not(:disabled) {
   background-color: #ff7a29;
 }
 
-.submit-button:active {
+.submit-button:active:not(:disabled) {
   transform: scale(0.98);
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* 태블릿 (768px 이하) */
