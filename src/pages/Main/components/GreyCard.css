@@ -1,0 +1,20 @@
+.grey-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.grey-card-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.grey-card-contents {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}

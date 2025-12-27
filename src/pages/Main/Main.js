@@ -1,0 +1,144 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Main.css';
+import GreyCard from './components/GreyCard';
+
+function Main() {
+  const navigate = useNavigate();
+  const [images, setImages] = useState([]); // 빈 배열로 시작
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // 이미지 추가
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImages((prevImages) => [...prevImages, imageUrl]);
+      // 첫 이미지 추가 시 currentIndex를 0으로 설정
+      if (images.length === 0) {
+        setCurrentIndex(0);
+      }
+    }
+  };
+
+  // 이전 이미지
+  const handlePrevious = () => {
+    if (images.length === 0) return;
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // 다음 이미지
+  const handleNext = () => {
+    if (images.length === 0) return;
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  // 인디케이터 클릭
+  const onClickIndicator = (idx) => {
+    setCurrentIndex(idx);
+  };
+
+  // 방명록 작성 페이지로 이동
+  const goToWriteMessage = () => {
+    navigate('/write');
+  };
+
+  return (
+    <div className="main-container">
+      <div className="main-content">
+
+        {/* 이미지 슬라이더 */}
+        <div className="image-slider-section">
+          <div className="slider-container">
+            {/* 이미지가 있을 때만 버튼 표시 */}
+            {images.length > 0 ? (
+              <>
+                <button
+                  className="slider-button prev"
+                  onClick={handlePrevious}
+                >
+                  ‹
+                </button>
+
+                <div className="slider-img-container">
+                  <img
+                    src={images[currentIndex]}
+                    alt={`슬라이드 ${currentIndex + 1}`}
+                    className="slider-image"
+                  />
+                  {/* <div className="slider-indicator">
+                    {currentIndex + 1} / {images.length}
+                  </div> */}
+                </div>
+
+                <button
+                  className="slider-button next"
+                  onClick={handleNext}
+                >
+                  ›
+                </button>
+              </>
+            ) : (
+              /* 이미지가 없을 때 빈 상태 표시 */
+              <div className="empty-slider">
+                <div className="empty-message">
+                  <span className="empty-icon">🖼️</span>
+                  <p>이미지를 추가해주세요</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 인디케이터 (이미지가 2개 이상일 때만 표시) */}
+          {images.length > 1 && (
+            <div className="indicator-container">
+              {images.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`indicator-dot ${idx === currentIndex ? 'active' : ''}`}
+                  onClick={() => onClickIndicator(idx)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* 이미지 등록 버튼 */}
+          <div className="upload-button-container">
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+            <label htmlFor="image-upload" className="upload-button">
+              <span className="camera-icon">📷</span>
+            </label>
+          </div>
+        </div>
+
+        {/* 방명록 작성하기 버튼 */}
+        <button className="write-message-button" onClick={goToWriteMessage}>
+          방명록 작성하기
+        </button>
+
+        {/* GreyCard 예시 */}
+        <GreyCard
+          name="테스트 카드"
+          contents="이것은 회색 카드의 내용입니다."
+        />
+        <GreyCard
+          name="테스트 카드"
+          contents="이것은 회색 카드의 내용입니다."
+        />
+        <GreyCard
+          name="두 번째 카드"
+          contents="여러 개의 카드를 추가할 수 있습니다."
+        />
+
+      </div>
+    </div>
+  );
+}
+
+export default Main;

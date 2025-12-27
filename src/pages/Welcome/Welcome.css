@@ -1,0 +1,113 @@
+/* 기본 컨테이너 */
+.welcome-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: white;
+  padding: 20px;
+
+  box-sizing: border-box;
+}
+
+/* 컨텐츠 영역 */
+.welcome-content {
+  text-align: center;
+  color: black;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* 제목 */
+.welcome-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* 설명 */
+.welcome-content p {
+  font-size: 1.5rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+/* 버튼 */
+.create-button {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #ff8c42;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+}
+
+.create-button:hover {
+  background-color: #ff7a29;
+}
+
+.create-button:active {
+  transform: translateY(0);
+}
+
+/* 태블릿 (768px 이하) */
+@media (max-width: 768px) {
+  .welcome-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .welcome-content p {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .create-button {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .welcome-container {
+    padding: 15px;
+  }
+
+  .welcome-content h1 {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .welcome-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .create-button {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* 작은 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .welcome-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .welcome-content p {
+    font-size: 1rem;
+  }
+
+  .create-button {
+    font-size: 0.95rem;
+    padding: 0.8rem 1.2rem;
+  }
+}
