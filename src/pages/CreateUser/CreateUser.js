@@ -38,24 +38,6 @@ function CreateUser() {
     try {
       let photoUrl = '';
 
-      // 사진이 있으면 먼저 업로드
-      if (targetPhotoFile) {
-        const formData = new FormData();
-        formData.append('file', targetPhotoFile);
-
-        const uploadResponse = await fetch(`${API_BASE_URL}/api/celebrations/profile`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('사진 업로드에 실패했습니다.');
-        }
-
-        photoUrl = await uploadResponse.text();
-        console.log('업로드된 사진 URL:', photoUrl);
-      }
-
       // 축하 페이지 생성
       const requestBody = {
         title: pageTitle,
