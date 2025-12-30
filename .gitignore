@@ -5,12 +5,13 @@
 node_modules/
 
 # Package files
-package-lock.json
 
 # Build output
-public/
+
 
 # Environment variables
 .env
 .env.local
 .env.production
+
+build/
