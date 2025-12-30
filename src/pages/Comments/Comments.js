@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import './Comments.css';
 import GreyCard from '../Main/components/GreyCard';
 
@@ -7,7 +7,9 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 function Comments() {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { link } = useParams();
+  const [searchParams] = useSearchParams();
+  const celebrationId = searchParams.get('celebrationId');
 
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,17 +30,17 @@ function Comments() {
   const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
-    if (id) {
+    if (celebrationId) {
       fetchComments();
     }
-  }, [id]);
+  }, [celebrationId]);
 
   const fetchComments = async () => {
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments?page=0&size=10&sort=createdAt,desc`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments?page=0&size=10&sort=createdAt,desc`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +70,7 @@ function Comments() {
   };
 
   const goBack = () => {
-    navigate(`/main/${id}`);
+    navigate(`/main/${link}?id=${celebrationId}`);
   };
 
   const handleEditComment = (commentId, currentName, currentContent) => {
@@ -94,7 +96,7 @@ function Comments() {
     setDeleteLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments/${deleteCommentId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments/${deleteCommentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -156,7 +158,7 @@ function Comments() {
     setEditLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments/${editCommentId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments/${editCommentId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -187,7 +189,7 @@ function Comments() {
 
       fetchComments();
     } catch (error) {
-      console.log(id, editCommentId);
+      console.log(celebrationId, editCommentId);
       console.error('댓글 수정 오류:', error);
       alert('네트워크 오류가 발생했습니다.');
     } finally {

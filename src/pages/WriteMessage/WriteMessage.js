@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import './WriteMessage.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 function WriteMessage() {
     const navigate = useNavigate();
-    const { id } = useParams(); // URL에서 celebration ID 가져오기
+    const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const celebrationId = searchParams.get('celebrationId');
+    const link = searchParams.get('link');
     const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
     const [password, setPassword] = useState('');
@@ -31,7 +34,7 @@ function WriteMessage() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments`, {
+            const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,7 +55,7 @@ function WriteMessage() {
 
             // 성공 시 Main 페이지로 이동
             alert('메시지가 등록되었습니다!');
-            navigate(`/main/${id}`);
+            navigate(`/main/${link}?id=${celebrationId}`);
         } catch (err) {
             console.error('Error:', err);
             alert('메시지 등록에 실패했습니다. 다시 시도해주세요.');

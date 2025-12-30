@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CreateUser.css';
 
 // 개발 환경: 프록시를 사용하기 위해 빈 문자열 사용
@@ -6,6 +7,7 @@ import './CreateUser.css';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 function CreateUser() {
+  const navigate = useNavigate();
   const [pageTitle, setPageTitle] = useState('');
   const [targetName, setTargetName] = useState('');
   const [targetPhoto, setTargetPhoto] = useState(null);
@@ -67,6 +69,11 @@ function CreateUser() {
 
       setResponse(data);
       alert('축하 페이지가 생성되었습니다!');
+      
+      // 생성된 페이지로 이동
+      if (data.link && data.id) {
+        navigate(`/main/${data.link}?id=${data.id}`);
+      }
 
     } catch (err) {
       console.error('Error:', err);

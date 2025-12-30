@@ -13,9 +13,9 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Welcome />} />
-          <Route path="/main/:id" element={<Main />} />
-          <Route path="/write/:id" element={<WriteMessage />} />
-          <Route path="/comments/:id" element={<Comments />} />
+          <Route path="/main/:link" element={<Main />} />
+          <Route path="/write/:link" element={<WriteMessage />} />
+          <Route path="/comments/:link" element={<Comments />} />
           <Route path="/create-user" element={<CreateUser />} />
         </Routes>
       </div>

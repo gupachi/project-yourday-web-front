@@ -542,6 +542,29 @@
   background-color: inherit;
 }
 
+/* 페이지 관리 링크 */
+.page-management-links {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  padding: 10px 20px;
+}
+
+.page-link {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.page-link:hover {
+  color: #666;
+}
+
 /* 모달 모바일 반응형 */
 @media (max-width: 480px) {
   .modal-content {
