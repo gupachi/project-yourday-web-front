@@ -18,6 +18,7 @@ function CreateUser() {
   const [error, setError] = useState('');
   const [response, setResponse] = useState(null);
 
+  //사진 미리 보기 
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -26,8 +27,31 @@ function CreateUser() {
     }
   };
 
+  const uploadProfileImage = async (file) => {
+    console.log('📤 업로드 시작:', file);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const res = await fetch(`${API_BASE_URL}/api/celebrations/profile`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    console.log('📥 서버 응답 상태:', res.status);
+
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+
+    const photoUrl = await res.text();
+    console.log('✅ 업로드 성공 photoUrl:', photoUrl);
+
+    return photoUrl; // ⭐ 문자열
+  };
+
+
   const handleSubmit = async () => {
-    // 유효성 검사
     if (!pageTitle || !targetName || !eventDate || !adminPassword) {
       setError('모든 필수 항목을 입력해주세요.');
       return;
@@ -38,50 +62,53 @@ function CreateUser() {
     setResponse(null);
 
     try {
-      let photoUrl = '';
+      let photoUrl = null; // ⭐ 반드시 선언
 
-      // 축하 페이지 생성
+      // ✅ 1. 이미지 업로드
+      if (targetPhotoFile) {
+        photoUrl = await uploadProfileImage(targetPhotoFile);
+        console.log('📸 업로드된 이미지 URL:', photoUrl);
+        console.log('🔍 URL 타입:', typeof photoUrl);
+        console.log('🔍 URL 유효성 검사:', photoUrl.startsWith('http'));
+      }
+
+      console.log('🚀 최종 photoUrl:', photoUrl);
+
+      // ✅ 2. 축하 페이지 생성
       const requestBody = {
         title: pageTitle,
         recipientName: targetName,
-        recipientPhoto: photoUrl,
-        eventDate: eventDate,
-        adminPassword: adminPassword,
+        recipientPhoto: photoUrl, // ⭐ 문자열 or null
+        eventDate,
+        adminPassword,
       };
 
-      console.log('Request Body:', requestBody);
+      console.log('🚀 celebrations payload:', requestBody);
 
       const apiResponse = await fetch(`${API_BASE_URL}/api/celebrations`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       });
 
       if (!apiResponse.ok) {
-        const errorText = await apiResponse.text();
-        throw new Error(`오류 발생: ${errorText}`);
+        throw new Error(await apiResponse.text());
       }
 
       const data = await apiResponse.json();
-      console.log('Response:', data);
-
       setResponse(data);
+
       alert('축하 페이지가 생성되었습니다!');
-      
-      // 생성된 페이지로 이동
-      if (data.link && data.id) {
-        navigate(`/main/${data.link}?id=${data.id}`);
-      }
+      navigate(`/main/${data.link}?id=${data.id}`);
 
     } catch (err) {
-      console.error('Error:', err);
       setError(err.message || '페이지 생성 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
   };
+
+
 
   return (
     <div className="create-user-container">

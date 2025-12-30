@@ -10,10 +10,13 @@ function WriteMessage() {
     const [searchParams] = useSearchParams();
     const celebrationId = searchParams.get('celebrationId');
     const link = searchParams.get('link');
+    const recipientName = searchParams.get('recipientName') || '';
+    const recipientPhoto = searchParams.get('recipientPhoto') || '';
     const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+
 
     const handleSubmit = async () => {
         if (!author.trim() || !message.trim()) {
@@ -67,7 +70,34 @@ function WriteMessage() {
     return (
         <div className="write-message-container">
             <div className="write-message-content">
-                <h1>방명록 작성</h1>
+                {/* 상단 프로필 섹션 */}
+                <div className="recipient-profile-section">
+                    {recipientPhoto && (
+                        <div className="recipient-photo-wrapper">
+                            {recipientPhoto ? (
+                                <img
+                                    src={recipientPhoto}
+                                    alt={recipientName}
+                                    className="recipient-photo"
+                                    onError={(e) => {
+                                        console.error('❌ 이미지 로드 실패:', recipientPhoto);
+                                        e.target.style.display = 'none';
+                                    }}
+                                    onLoad={() => console.log('✅ 이미지 로드 성공:', recipientPhoto)}
+                                />
+                            ) : (
+                                <div className="recipient-photo placeholder" />
+                            )}
+                        </div>
+
+                    )}
+                    <h1 className="recipient-title">
+                        {recipientName ? `${recipientName}님에게` : '방명록 작성'}
+                    </h1>
+                    <p className="recipient-subtitle">
+                        {recipientName ? '축하 메시지를 남겨주세요' : '소중한 추억을 남겨주세요'}
+                    </p>
+                </div>
 
                 {/* 작성자 */}
                 <div className="form-group">

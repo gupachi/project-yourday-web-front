@@ -76,6 +76,7 @@ function Main() {
 
       const data = await response.json();
       console.log('받은 celebration 데이터:', data);
+      console.log('recipientPhoto:', data.pageContent?.recipientPhoto);
       setCelebrationData(data);
 
       if (data.pageContent && data.pageContent.recipientName) {
@@ -83,8 +84,11 @@ function Main() {
       }
 
       if (data.pageContent && data.pageContent.recipientPhoto) {
+        console.log('이미지 URL 설정:', data.pageContent.recipientPhoto);
         setImages([data.pageContent.recipientPhoto]);
         setCurrentIndex(0);
+      } else {
+        console.log('❌ recipientPhoto가 없습니다');
       }
 
     } catch (err) {
@@ -157,7 +161,9 @@ function Main() {
   };
 
   const goToWriteMessage = () => {
-    navigate(`/write/${link}?celebrationId=${id}&link=${link}`);
+    const recipientName = celebrationData?.pageContent?.recipientName || '';
+    const recipientPhoto = celebrationData?.pageContent?.recipientPhoto || '';
+    navigate(`/write/${link}?celebrationId=${id}&link=${link}&recipientName=${encodeURIComponent(recipientName)}&recipientPhoto=${encodeURIComponent(recipientPhoto)}`);
   };
 
   const handleEditComment = (commentId, currentName, currentContent) => {
@@ -506,6 +512,11 @@ function Main() {
                     src={images[currentIndex]}
                     alt={`슬라이드 ${currentIndex + 1}`}
                     className="slider-image"
+                    onError={(e) => {
+                      console.error('❌ 슬라이더 이미지 로드 실패:', images[currentIndex]);
+                      e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ddd" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23999" font-size="20"%3E이미지 로드 실패%3C/text%3E%3C/svg%3E';
+                    }}
+                    onLoad={() => console.log('✅ 슬라이더 이미지 로드 성공:', images[currentIndex])}
                   />
                 </div>
 
