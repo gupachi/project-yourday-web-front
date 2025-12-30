@@ -4,17 +4,104 @@
   padding: 20px;
   margin: 20px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.grey-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 헤더 영역 (이름 + 액션 버튼) */
+.grey-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .grey-card-name {
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 12px 0;
+  margin: 0;
 }
 
+/* 액션 버튼 영역 */
+.grey-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.action-button:active {
+  transform: scale(0.95);
+}
+
+/* 수정 버튼 */
+.edit-button {
+  color: #667eea;
+}
+
+.edit-button:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: #5568d3;
+}
+
+/* 삭제 버튼 */
+.delete-button {
+  color: #999;
+}
+
+.delete-button:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+/* 내용 영역 */
 .grey-card-contents {
   font-size: 14px;
   color: #666;
   line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+  .grey-card {
+    padding: 16px;
+    margin: 15px 0;
+  }
+
+  .grey-card-name {
+    font-size: 16px;
+  }
+
+  .grey-card-contents {
+    font-size: 13px;
+  }
+
+  .action-button {
+    padding: 5px;
+  }
+
+  .action-button svg {
+    width: 14px;
+    height: 14px;
+  }
 }

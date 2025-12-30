@@ -9,11 +9,22 @@ function WriteMessage() {
     const { id } = useParams(); // URL에서 celebration ID 가져오기
     const [author, setAuthor] = useState('');
     const [message, setMessage] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
         if (!author.trim() || !message.trim()) {
             alert('작성자와 메시지를 모두 입력해주세요.');
+            return;
+        }
+
+        if (!password.trim()) {
+            alert('비밀번호를 입력해주세요.');
+            return;
+        }
+
+        if (password.length < 4) {
+            alert('비밀번호는 최소 4자리 이상 입력해주세요.');
             return;
         }
 
@@ -28,7 +39,7 @@ function WriteMessage() {
                 body: JSON.stringify({
                     name: author,
                     content: message,
-                    password: "0000"
+                    password: password
                 })
             });
 
@@ -66,6 +77,21 @@ function WriteMessage() {
                         className="input-field"
                         disabled={loading}
                     />
+                </div>
+
+                {/* 비밀번호 */}
+                <div className="form-group">
+                    <label>비밀번호</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="비밀번호 입력 (4자리 이상)"
+                        className="input-field"
+                        disabled={loading}
+                        maxLength="20"
+                    />
+                    <p className="helper-text">댓글 수정/삭제 시 필요합니다.</p>
                 </div>
 
                 {/* 메시지 입력 */}
