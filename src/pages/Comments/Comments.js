@@ -166,6 +166,7 @@ function Comments() {
         body: JSON.stringify({
           name: editName,
           content: editContent,
+          password: editPassword,
         }),
       });
 

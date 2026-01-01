@@ -7,8 +7,8 @@ const GreyCard = ({ name, contents, onEdit, onDelete }) => {
       <div className="grey-card-header">
         <h3 className="grey-card-name">{name}</h3>
         <div className="grey-card-actions">
-          <button 
-            className="action-button edit-button" 
+          <button
+            className="action-button edit-button"
             onClick={onEdit}
             aria-label="수정"
             title="수정"
@@ -18,8 +18,8 @@ const GreyCard = ({ name, contents, onEdit, onDelete }) => {
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
-          <button 
-            className="action-button delete-button" 
+          <button
+            className="action-button delete-button"
             onClick={onDelete}
             aria-label="삭제"
             title="삭제"

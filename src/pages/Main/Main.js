@@ -9,7 +9,6 @@ function Main() {
   const navigate = useNavigate();
   const { link } = useParams();
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
 
   const [images, setImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,18 +51,19 @@ function Main() {
   const [pageEditEventDate, setPageEditEventDate] = useState('');
 
   useEffect(() => {
-    if (id) {
-      fetchCelebration();
-      fetchComments();
+    if (link) {
+      fetchCelebrationByLink(link);
     }
-  }, [id]);
+  }, [link]);
 
-  const fetchCelebration = async () => {
+  const fetchCelebrationByLink = async (linkId) => {
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}`, {
+      const apiUrl = `${API_BASE_URL}/api/celebrations?link=${linkId}`;
+
+      const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -75,8 +75,6 @@ function Main() {
       }
 
       const data = await response.json();
-      console.log('받은 celebration 데이터:', data);
-      console.log('recipientPhoto:', data.pageContent?.recipientPhoto);
       setCelebrationData(data);
 
       if (data.pageContent && data.pageContent.recipientName) {
@@ -84,11 +82,13 @@ function Main() {
       }
 
       if (data.pageContent && data.pageContent.recipientPhoto) {
-        console.log('이미지 URL 설정:', data.pageContent.recipientPhoto);
         setImages([data.pageContent.recipientPhoto]);
         setCurrentIndex(0);
-      } else {
-        console.log('❌ recipientPhoto가 없습니다');
+      }
+
+      // 방명록 조회
+      if (data.id) {
+        fetchComments(data.id);
       }
 
     } catch (err) {
@@ -99,11 +99,11 @@ function Main() {
     }
   };
 
-  const fetchComments = async () => {
+  const fetchComments = async (celebrationId) => {
     setCommentsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments?page=0&size=3&sort=createdAt,desc`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments?page=0&size=3&sort=createdAt,desc`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -115,9 +115,7 @@ function Main() {
       }
 
       const data = await response.json();
-      console.log('받은 방명록 데이터:', data);
 
-      // 페이지네이션 응답인 경우 content 필드에서 가져오기
       if (data.content) {
         setComments(data.content);
       } else if (Array.isArray(data)) {
@@ -157,13 +155,15 @@ function Main() {
   };
 
   const goToComments = () => {
-    navigate(`/comments/${link}?celebrationId=${id}&link=${link}`);
+    const celebrationId = celebrationData?.id;
+    navigate(`/comments/${link}?celebrationId=${celebrationId}&link=${link}`);
   };
 
   const goToWriteMessage = () => {
+    const celebrationId = celebrationData?.id;
     const recipientName = celebrationData?.pageContent?.recipientName || '';
     const recipientPhoto = celebrationData?.pageContent?.recipientPhoto || '';
-    navigate(`/write/${link}?celebrationId=${id}&link=${link}&recipientName=${encodeURIComponent(recipientName)}&recipientPhoto=${encodeURIComponent(recipientPhoto)}`);
+    navigate(`/write/${link}?celebrationId=${celebrationId}&link=${link}&recipientName=${encodeURIComponent(recipientName)}&recipientPhoto=${encodeURIComponent(recipientPhoto)}`);
   };
 
   const handleEditComment = (commentId, currentName, currentContent) => {
@@ -186,10 +186,16 @@ function Main() {
       return;
     }
 
+    const celebrationId = celebrationData?.id;
+    if (!celebrationId) {
+      alert('페이지 정보를 찾을 수 없습니다.');
+      return;
+    }
+
     setDeleteLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments/${deleteCommentId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments/${deleteCommentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -210,14 +216,12 @@ function Main() {
         return;
       }
 
-      // 삭제 성공
       alert('댓글이 삭제되었습니다.');
       setShowDeleteModal(false);
       setDeletePassword('');
       setDeleteCommentId(null);
 
-      // 댓글 목록 새로고침
-      fetchComments();
+      fetchComments(celebrationId);
     } catch (error) {
       console.error('댓글 삭제 오류:', error);
       alert('네트워크 오류가 발생했습니다.');
@@ -248,10 +252,16 @@ function Main() {
       return;
     }
 
+    const celebrationId = celebrationData?.id;
+    if (!celebrationId) {
+      alert('페이지 정보를 찾을 수 없습니다.');
+      return;
+    }
+
     setEditLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}/comments/${editCommentId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}/comments/${editCommentId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -259,6 +269,7 @@ function Main() {
         body: JSON.stringify({
           name: editName,
           content: editContent,
+          password: editPassword,
         }),
       });
 
@@ -273,7 +284,6 @@ function Main() {
         return;
       }
 
-      // 수정 성공
       alert('댓글이 수정되었습니다.');
       setShowEditModal(false);
       setEditPassword('');
@@ -281,8 +291,7 @@ function Main() {
       setEditContent('');
       setEditCommentId(null);
 
-      // 댓글 목록 새로고침
-      fetchComments();
+      fetchComments(celebrationId);
     } catch (error) {
       console.error('댓글 수정 오류:', error);
       alert('네트워크 오류가 발생했습니다.');
@@ -313,16 +322,21 @@ function Main() {
       return;
     }
 
-    // 비밀번호 입력 완료하면 확인 팝업 표시
     setShowPageDeleteModal(false);
     setShowDeleteConfirmModal(true);
   };
 
   const confirmPageDelete = async () => {
+    const celebrationId = celebrationData?.id;
+    if (!celebrationId) {
+      alert('페이지 정보를 찾을 수 없습니다.');
+      return;
+    }
+
     setPageDeleteLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -345,13 +359,11 @@ function Main() {
         return;
       }
 
-      // 삭제 성공
       setShowDeleteConfirmModal(false);
       setDeleteResultMessage('페이지가 성공적으로 삭제되었습니다.');
       setShowDeleteResultModal(true);
       setPageDeletePassword('');
 
-      // 삭제 성공 시 Welcome 페이지로 이동
       setTimeout(() => {
         navigate('/');
       }, 1500);
@@ -379,7 +391,6 @@ function Main() {
 
   // 페이지 수정 핸들러
   const handlePageEdit = () => {
-    // 현재 celebration 데이터로 초기화
     if (celebrationData && celebrationData.pageContent) {
       setPageEditTitle(celebrationData.pageContent.title || '');
       setPageEditRecipientName(celebrationData.pageContent.recipientName || '');
@@ -410,10 +421,16 @@ function Main() {
       return;
     }
 
+    const celebrationId = celebrationData?.id;
+    if (!celebrationId) {
+      alert('페이지 정보를 찾을 수 없습니다.');
+      return;
+    }
+
     setPageEditLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/celebrations/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/celebrations/${celebrationId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -437,13 +454,14 @@ function Main() {
         return;
       }
 
-      // 수정 성공
       alert('페이지가 수정되었습니다.');
       setShowPageEditModal(false);
       setPageEditPassword('');
 
       // 페이지 정보 새로고침
-      fetchCelebration();
+      if (link) {
+        fetchCelebrationByLink(link);
+      }
     } catch (error) {
       console.error('페이지 수정 오류:', error);
       alert('네트워크 오류가 발생했습니다.');
@@ -495,7 +513,6 @@ function Main() {
         {celebrationData && celebrationData.pageContent && (
           <div style={{ padding: '20px', background: '#f0f0f0', marginBottom: '20px' }}>
             <h2>{celebrationData.pageContent.title}</h2>
-
           </div>
         )}
 
@@ -512,11 +529,6 @@ function Main() {
                     src={images[currentIndex]}
                     alt={`슬라이드 ${currentIndex + 1}`}
                     className="slider-image"
-                    onError={(e) => {
-                      console.error('❌ 슬라이더 이미지 로드 실패:', images[currentIndex]);
-                      e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23ddd" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23999" font-size="20"%3E이미지 로드 실패%3C/text%3E%3C/svg%3E';
-                    }}
-                    onLoad={() => console.log('✅ 슬라이더 이미지 로드 성공:', images[currentIndex])}
                   />
                 </div>
 
@@ -574,7 +586,7 @@ function Main() {
         </div>
         <div className="section-divider"></div>
 
-        {/* 방명록 리스트 (최신 5개) */}
+        {/* 방명록 리스트 */}
         {commentsLoading ? (
           <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>
             방명록 로딩 중...
