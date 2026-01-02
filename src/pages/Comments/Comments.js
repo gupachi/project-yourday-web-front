@@ -70,7 +70,7 @@ function Comments() {
   };
 
   const goBack = () => {
-    navigate(`/main/${link}?id=${celebrationId}`);
+    navigate(`/${link}?id=${celebrationId}`);
   };
 
   const handleEditComment = (commentId, currentName, currentContent) => {

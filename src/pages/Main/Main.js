@@ -163,7 +163,7 @@ function Main() {
     const celebrationId = celebrationData?.id;
     const recipientName = celebrationData?.pageContent?.recipientName || '';
     const recipientPhoto = celebrationData?.pageContent?.recipientPhoto || '';
-    navigate(`/write/${link}?celebrationId=${celebrationId}&link=${link}&recipientName=${encodeURIComponent(recipientName)}&recipientPhoto=${encodeURIComponent(recipientPhoto)}`);
+    navigate(`/write/?celebrationId=${celebrationId}&link=${link}&recipientName=${encodeURIComponent(recipientName)}&recipientPhoto=${encodeURIComponent(recipientPhoto)}`);
   };
 
   const handleEditComment = (commentId, currentName, currentContent) => {

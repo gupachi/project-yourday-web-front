@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/create-user" element={<CreateUser />} />
-          <Route path="/write/:link" element={<WriteMessage />} />
+          <Route path="/write" element={<WriteMessage />} />
           <Route path="/comments/:link" element={<Comments />} />
           <Route path="/:link" element={<Main />} />
         </Routes>

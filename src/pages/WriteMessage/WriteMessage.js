@@ -58,7 +58,7 @@ function WriteMessage() {
 
             // 성공 시 Main 페이지로 이동
             alert('메시지가 등록되었습니다!');
-            navigate(`/main/${link}?id=${celebrationId}`);
+            navigate(`/${link}?id=${celebrationId}`);
         } catch (err) {
             console.error('Error:', err);
             alert('메시지 등록에 실패했습니다. 다시 시도해주세요.');
