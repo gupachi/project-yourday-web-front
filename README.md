@@ -10,12 +10,29 @@
 - 팀: 프론트[전지원] 1명, 백엔드 1명
 
 ## 주요 기능 
-- 하루 전용 축하 페이지 생성
+- 개인별 개별 축하 페이지 생성
 - 링크 기반 공유
-- 사진 업로드 및 방명록
+- 사진 업로드 및 방명록 
 - 실시간 페이지 수정
 
-(+역할, + 기술 스택) 
+## 역할 
+- 웹 프론트엔드 개발 
+- UI 구현 및 페이지 상태 관리
+- Swagger 기반 API 연동
+
+## 기술스택
+| **Category** | **TechStack** |
+-- | --
+Frontend Language | JavaScript
+Frontend Framework | React
+Styling | CSS
+State Management | React Hooks
+API Communication | REST API
+Backend Language | Kotlin
+Backend Framework | Spring Boot
+ORM | JPA
+Architecture | DDD (Domain-Driven Design)
+API Documentation | Swagger
 
 ## 프로젝트 시연
 
